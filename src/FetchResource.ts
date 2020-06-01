@@ -17,7 +17,7 @@ export interface FetchOptions {
   redirect?: RequestRedirect
   referrer?: 'no-referrer' | 'client'
   timeOffset?: boolean
-  handleError?: (payload: any) => any
+  handleError?: (payload: { response: Response, parsedBody: any }) => void
   queryParamsDecodeMode?: 'comma' | 'array'
   // params?: any
   // todo 
@@ -126,9 +126,9 @@ export class FetchResource implements BaseResource {
             reject(response);
           }
         })
-        .catch((error: Response) => {
+        .catch(async (error: Response) => {
           const errorCopy = error.clone();
-          this.handleError(errorCopy);
+          await this.handleError(errorCopy);
           reject(error);
         });
     });
